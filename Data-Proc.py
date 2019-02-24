@@ -25,30 +25,35 @@ def load_data_csv(loc):
 
 if __name__ == '__main__':
 
-    # x = []
-    # x += load_data_csv(os.getcwd() + '/Dataset/had_abudaud.csv')
-    # x += load_data_csv(os.getcwd() + '/Dataset/had_bukhari.csv')
-    # x += load_data_csv(os.getcwd() + '/Dataset/had_muslim.csv')
-    # x += load_data_csv(os.getcwd() + '/Dataset/had_nasai.csv')
-    # x += load_data_csv(os.getcwd() + '/Dataset/had_tirmidzi.csv')
-    #
-    # x_prep = []
-    # for i, row in enumerate(x):
-    #     x_prep.append(simple_preprocess(row))
-    # model = Word2Vec(
-    #     x_prep,
-    #     size=400,
-    #     window=10,
-    #     min_count=2,
-    #     workers=10,
-    #     sg=1,
-    #     cbow_mean=0
-    # )
-    # model.train(x_prep, total_examples=len(x_prep), epochs=10)
-    # model.save('sg_hadith_size=1500_window=10.model')
-    model = Word2Vec.load('sg_hadith_size=1500_window=10.model')
-    w = 'nabi'
-    print(model.wv.most_similar(positive=w))
-    model = Word2Vec.load('cbow_hadith_size=1500_window=10.model')
-    print(model.wv.most_similar(positive=w))
+    x = []
+    x += load_data_csv(os.getcwd() + '/Dataset/had_abudaud.csv')
+    x += load_data_csv(os.getcwd() + '/Dataset/had_bukhari.csv')
+    x += load_data_csv(os.getcwd() + '/Dataset/had_muslim.csv')
+    x += load_data_csv(os.getcwd() + '/Dataset/had_nasai.csv')
+    x += load_data_csv(os.getcwd() + '/Dataset/had_tirmidzi.csv')
 
+    sizes = [100, 200, 300, 400, 500, 600]
+    windows = [1, 2, 3, 5, 10]
+
+    for ii in range(len(sizes)):
+        for jj in range(len(windows)):
+            x_prep = []
+            for i, row in enumerate(x):
+                x_prep.append(simple_preprocess(row))
+            model = Word2Vec(
+                x_prep,
+                size=sizes[ii],
+                window=windows[jj],
+                min_count=2,
+                workers=10,
+                sg=1,
+                cbow_mean=0
+            )
+            model.train(x_prep, total_examples=len(x_prep), epochs=10)
+            model.save('sg_hadith_size={}_window={}.model'.format(sizes[ii], windows[jj]))
+    # model = Word2Vec.load('sg_hadith_size=1500_window=10.model')
+    # w = 'nabi'
+    # print(model.wv.most_similar(positive=w))
+    # model = Word2Vec.load('cbow_hadith_size=1500_window=10.model')
+    # print(model.wv.most_similar(positive=w))
+    # print(model['nabi'])
